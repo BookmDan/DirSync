@@ -9,5 +9,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 public class DirSync {
-  // parse 
+  // parse files 
+
+  // source 
+
+  // destination
+
+
+  // call or return 
 }
