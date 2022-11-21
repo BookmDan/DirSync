@@ -1,70 +1,104 @@
+// Daniel Oh 
+// Nov 20, 2022
+
 package DirSync;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Scanner;
 
 public class DirSync {
-  private static String src;
-  private static String dest;
+  private String src;
+  private String dest;
 
-  // default 
-  public void copyDir() {
-    copyDir(getSrc(), getDest(), true);
-  }
+  // // default 
+  // public void copyDir() {
+  //   copyDir(getSrc(), getDest(), true);
+  // }
 
-  public void copyDir(String src, String dest, boolean overWrite) {
-    this.setSrc(src);
-    this.setDest(dest);
+  private void fileCopy(File src, File dest)throws FileNotFoundException, IOException {
+    InputStream in = null;
+    OutputStream out = null;
 
-    Directory
-
-  }
-
-  public static void main(String[] args) {
-
-
-    String[] paths;
     try {
-      File file = new File("./temp1/tempFile.java");
+      in = new FileInputStream(src);
+      out = new FileOutputStream(dest);
+
+      byte[] buffer = new byte[1024];
+      int lengthOfDir;
+      while(( lengthOfDir = in.read(buffer)) > 0)
+      {
+        out.write(buffer, 0, lengthOfDir);
+      }
+    }
+    finally
+    {
+      if (in != null) {
+        in.close();
+      }
+      if (out != null) {
+        out.close();
+      }
+    }
+    System.out.println("File copied " + src + " to " + dest);
+  }
+
+  public void copyDir(File src, File dest) throws IOException {
+    // this.setSrc(src);
+    // this.setDest(dest);
+
+    if (src.isDirectory()) {
+      if (!dest.exists()) {
+        dest.mkdir();
+        System.out.println("Directory copied from " + src + " to " + dest);
+      }
+
       // get all subdirectories
-      paths = file.list(); // list method returns array of strings of file directories
-      
-      if (!src.exists()) {
-        System.out.println("directory does not exist.");
+      String[] paths = src.list();
 
-      }
-      else {
-
-      }
-      HashMap<String, String> subDir2 = new HashMap<String, String>();
-
-      for(String path : paths){
-        // store, copy src path files into dest path 
-       subDir2.put(dest, path);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+      for (String fileName : paths) {
+        File srcFile = new File(src, fileName);
+        File destFile = new File(dest, fileName);
+        // recursive copy to copy each file within src directory
+        copyDir(srcFile, destFile);
+      } 
+    } else {
+      fileCopy(src, dest);
     }
   }
 
+  public static void main(String[] args) {
+    Scanner scan = null;
+    try {
+      scan = new Scanner(System.in);
+      
+      String src = scan.next();
+      String dest = scan.next();
 
+      File srcDir = new File("./" + src);
+      File destDir = new File("./" + dest);
 
-  // parse files 
-
-  // source 
-
-  // destination
-
-
-  // call or return 
-
-  // copy files 
-  // copy dir
-
+      if (!srcDir.exists()) {
+        srcDir.mkdirs();
+        System.out.println("Directory does not exist.");
+        System.out.println("New directory created.");
+      }
+      else {
+        DirSync file = new DirSync();
+        // calls above method to copy subdirectories in srcDir -> destDir
+        file.copyDir(srcDir, destDir);
+        System.out.println("Directory synced!");
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      if (scan != null) 
+        scan.close();
+    }
+  }
 }
