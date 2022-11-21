@@ -13,13 +13,6 @@ import java.io.OutputStream;
 import java.util.Scanner;
 
 public class DirSync {
-  private String src;
-  private String dest;
-
-  // // default 
-  // public void copyDir() {
-  //   copyDir(getSrc(), getDest(), true);
-  // }
 
   private void fileCopy(File src, File dest)throws FileNotFoundException, IOException {
     InputStream in = null;
