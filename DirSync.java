@@ -42,8 +42,6 @@ public class DirSync {
   }
 
   public void copyDir(File src, File dest) throws IOException {
-    // this.setSrc(src);
-    // this.setDest(dest);
 
     if (src.isDirectory()) {
       if (!dest.exists()) {
